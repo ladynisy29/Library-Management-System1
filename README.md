@@ -1,6 +1,4 @@
-# m1-s1-2025 project
 
-## Getting started
 ### Nest API
 ```bash
 > cd nest-api
