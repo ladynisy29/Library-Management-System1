@@ -3,12 +3,18 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
   Query,
 } from '@nestjs/common';
-import { CreateBookDto, GetBooksDto, UpdateBookDto } from './book.dto';
+import {
+  CreateBookDto,
+  GetBooksDto,
+  RecordSaleDto,
+  UpdateBookDto,
+} from './book.dto';
 import { GetBooksModel } from './book.model';
 import { BookService } from './book.service';
 
@@ -18,15 +24,11 @@ export class BookController {
 
   @Get()
   async getBooks(@Query() input: GetBooksDto): Promise<GetBooksModel> {
-    const [property, direction] = input.sort
-      ? input.sort.split(',')
-      : ['title', 'ASC'];
-
     const [books, totalCount] = await this.bookService.getAllBooks({
-      ...input,
-      sort: {
-        [property]: direction,
-      },
+      limit: input.limit,
+      offset: input.offset,
+      sortField: input.sortField,
+      sortDirection: input.sortDirection,
     });
 
     return {
@@ -37,7 +39,12 @@ export class BookController {
 
   @Get(':id')
   public async getBook(@Param('id') id: string) {
-    return this.bookService.getBookById(id);
+    const book = await this.bookService.getBookById(id);
+    if (!book) {
+      throw new NotFoundException('Book not found');
+    }
+
+    return book;
   }
 
   @Post()
@@ -46,12 +53,30 @@ export class BookController {
   }
 
   @Patch(':id')
-  updateBook(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-    return this.bookService.updateBook(id, updateBookDto);
+  async updateBook(
+    @Param('id') id: string,
+    @Body() updateBookDto: UpdateBookDto,
+  ) {
+    const book = await this.bookService.updateBook(id, updateBookDto);
+    if (!book) {
+      throw new NotFoundException('Book not found');
+    }
+
+    return book;
   }
 
   @Delete(':id')
   deleteBook(@Param('id') id: string) {
     return this.bookService.deleteBook(id);
+  }
+
+  @Post(':id/sales')
+  async createSale(@Param('id') id: string, @Body() input: RecordSaleDto) {
+    const book = await this.bookService.createSale(id, input);
+    if (!book) {
+      throw new NotFoundException('Book not found');
+    }
+
+    return book;
   }
 }

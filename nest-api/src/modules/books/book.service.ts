@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import {
-  BookModel,
+  BookDetailsModel,
+  BookListItemModel,
+  CreateSaleModel,
   CreateBookModel,
   FilterBooksModel,
   UpdateBookModel,
@@ -13,31 +15,33 @@ export class BookService {
 
   public async getAllBooks(
     input?: FilterBooksModel,
-  ): Promise<[BookModel[], number]> {
+  ): Promise<[BookListItemModel[], number]> {
     return this.bookRepository.getAllBooks(input);
   }
 
-  public async getBookById(id: string): Promise<BookModel | undefined> {
+  public async getBookById(id: string): Promise<BookDetailsModel | null> {
     return this.bookRepository.getBookById(id);
   }
 
-  public async createBook(book: CreateBookModel): Promise<BookModel> {
+  public async createBook(book: CreateBookModel): Promise<BookDetailsModel> {
     return this.bookRepository.createBook(book);
   }
 
   public async updateBook(
     id: string,
     book: UpdateBookModel,
-  ): Promise<BookModel | undefined> {
-    const oldBook = await this.getBookById(id);
-    if (!oldBook) {
-      return undefined;
-    }
-
+  ): Promise<BookDetailsModel | null> {
     return this.bookRepository.updateBook(id, book);
   }
 
   public async deleteBook(id: string): Promise<void> {
     await this.bookRepository.deleteBook(id);
+  }
+
+  public async createSale(
+    bookId: string,
+    input: CreateSaleModel,
+  ): Promise<BookDetailsModel | null> {
+    return this.bookRepository.createSale(bookId, input);
   }
 }

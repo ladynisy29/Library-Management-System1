@@ -4,9 +4,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { AuthorEntity, type AuthorId } from '../../authors/author.entity';
+import { SaleEntity } from '../../sales/sale.entity';
 
 export type BookId = string & { __brand: 'Book' };
 
@@ -21,10 +23,16 @@ export class BookEntity extends BaseEntity {
   @Column({ name: 'year_published', type: 'int' })
   yearPublished: number;
 
+  @Column({ name: 'picture_url', type: 'varchar', nullable: true })
+  pictureUrl: string | null;
+
   @Column({ name: 'author_id', type: 'uuid' })
   authorId: AuthorId;
 
   @ManyToOne(() => AuthorEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'author_id' })
   author: AuthorEntity;
+
+  @OneToMany(() => SaleEntity, (sale: SaleEntity) => sale.book)
+  sales: SaleEntity[];
 }

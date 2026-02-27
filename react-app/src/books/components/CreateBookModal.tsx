@@ -9,15 +9,18 @@ interface CreateBookModalProps {
 }
 
 export function CreateBookModal({ onCreate }: CreateBookModalProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [title, setTitle] = useState('')
-  const [yearPublished, setYearPublished] = useState(0)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [title, setTitle] = useState<string>('')
+  const [yearPublished, setYearPublished] = useState<number>(0)
+  const [pictureUrl, setPictureUrl] = useState<string>('')
   const [authorId, setAuthorId] = useState<string | undefined>(undefined)
   const { authors, loadAuthors } = useBookAuthorsProviders()
 
-  const onClose = () => {
+  const onClose = (): void => {
     setTitle('')
     setYearPublished(0)
+    setPictureUrl('')
+    setAuthorId(undefined)
     setIsOpen(false)
   }
 
@@ -25,7 +28,7 @@ export function CreateBookModal({ onCreate }: CreateBookModalProps) {
     if (isOpen) {
       loadAuthors()
     }
-  }, [isOpen])
+  }, [isOpen, loadAuthors])
 
   return (
     <>
@@ -40,10 +43,15 @@ export function CreateBookModal({ onCreate }: CreateBookModalProps) {
         open={isOpen}
         onCancel={onClose}
         onOk={() => {
+          if (!authorId) {
+            return
+          }
+
           onCreate({
             title,
             yearPublished,
-            authorId: '4540d533-3100-445a-8796-ab5dfd9a3240',
+            authorId,
+            pictureUrl: pictureUrl.length > 0 ? pictureUrl : undefined,
           })
           onClose()
         }}
@@ -57,6 +65,12 @@ export function CreateBookModal({ onCreate }: CreateBookModalProps) {
             placeholder="Title"
             value={title}
             onChange={e => setTitle(e.target.value)}
+          />
+          <Input
+            type="text"
+            placeholder="Picture URL"
+            value={pictureUrl}
+            onChange={e => setPictureUrl(e.target.value)}
           />
           <Select
             style={{ width: '100%' }}

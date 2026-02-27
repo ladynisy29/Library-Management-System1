@@ -1,17 +1,34 @@
-import { useState } from 'react'
-import type { BookModel } from '../BookModel'
+import { useCallback, useState } from 'react'
+import type {
+  BookDetailsModel,
+  RecordSaleModel,
+  UpdateBookModel,
+} from '../BookModel'
+import { apiClient } from '../../api'
 
 export const useBookDetailsProvider = (id: string) => {
-  const [isLoading, setIsLoading] = useState(false)
-  const [book, setBook] = useState<BookModel | null>(null)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [book, setBook] = useState<BookDetailsModel | null>(null)
 
-  const loadBook = () => {
+  const loadBook = useCallback((): Promise<void> => {
     setIsLoading(true)
-    fetch(`http://localhost:3000/books/${id}`)
-      .then(response => response.json())
-      .then(data => setBook(data))
+    return apiClient
+      .get<BookDetailsModel>(`/books/${id}`)
+      .then(response => setBook(response.data))
       .finally(() => setIsLoading(false))
+  }, [id])
+
+  const updateBook = (input: UpdateBookModel): Promise<void> => {
+    return apiClient
+      .patch<BookDetailsModel>(`/books/${id}`, input)
+      .then(() => loadBook())
   }
 
-  return { isLoading, book, loadBook }
+  const recordSale = (input: RecordSaleModel): Promise<void> => {
+    return apiClient
+      .post<BookDetailsModel>(`/books/${id}/sales`, input)
+      .then(() => loadBook())
+  }
+
+  return { isLoading, book, loadBook, updateBook, recordSale }
 }

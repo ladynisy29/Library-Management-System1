@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { BookModel, UpdateBookModel } from '../BookModel'
-import { Button, Col, Row } from 'antd'
+import { Button, Col, Modal, Row } from 'antd'
 import {
   CheckOutlined,
   CloseOutlined,
@@ -16,8 +16,9 @@ interface BookListItemProps {
 }
 
 export function BookListItem({ book, onDelete, onUpdate }: BookListItemProps) {
-  const [title, setTitle] = useState(book.title)
-  const [isEditing, setIsEditing] = useState(false)
+  const [title, setTitle] = useState<string>(book.title)
+  const [isEditing, setIsEditing] = useState<boolean>(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
 
   const onCancelEdit = () => {
     setIsEditing(false)
@@ -59,12 +60,15 @@ export function BookListItem({ book, onDelete, onUpdate }: BookListItemProps) {
           </Link>
         )}
       </Col>
-      <Col span={9} style={{ margin: 'auto 0' }}>
+      <Col span={8} style={{ margin: 'auto 0' }}>
         by <span style={{ fontWeight: 'bold' }}>{book.author.firstName}</span>{' '}
         <span style={{ fontWeight: 'bold' }}>{book.author.lastName}</span>
       </Col>
+      <Col span={2} style={{ margin: 'auto 0' }}>
+        {book.clientsBoughtCount} sales
+      </Col>
       <Col
-        span={3}
+        span={2}
         style={{
           alignItems: 'right',
           display: 'flex',
@@ -86,10 +90,21 @@ export function BookListItem({ book, onDelete, onUpdate }: BookListItemProps) {
             <EditOutlined />
           </Button>
         )}
-        <Button type="primary" danger onClick={() => onDelete(book.id)}>
+        <Button type="primary" danger onClick={() => setIsDeleteOpen(true)}>
           <DeleteOutlined />
         </Button>
       </Col>
+      <Modal
+        title="Delete this book?"
+        open={isDeleteOpen}
+        onOk={() => {
+          onDelete(book.id)
+          setIsDeleteOpen(false)
+        }}
+        onCancel={() => setIsDeleteOpen(false)}
+      >
+        This action cannot be undone.
+      </Modal>
     </Row>
   )
 }

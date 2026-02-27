@@ -13,10 +13,10 @@ function App() {
 
   return (
     <>
-      <Hello name={name}>How are you ?</Hello>
+      <Hello name={name}>What is your name ?</Hello>
       <input value={newName} onChange={e => setNewName(e.target.value)} />
       <button onClick={onValidate}>OK</button>
-      <h3>This is a subtitle</h3>
+      <h3>Thank you for logging in</h3>
     </>
   )
 }
