@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from '@tanstack/react-router'
+import { SearchOutlined } from '@ant-design/icons'
 import {
   Breadcrumb,
   Button,
@@ -16,11 +17,26 @@ import { useAuthorProvider } from '../providers/useAuthorProvider'
 export function AuthorsPage(): React.JSX.Element {
   const { authors, loadAuthors, createAuthor, deleteAuthor } =
     useAuthorProvider()
+  const [searchQuery, setSearchQuery] = useState<string>('')
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false)
   const [deleteAuthorId, setDeleteAuthorId] = useState<string>('')
   const [firstName, setFirstName] = useState<string>('')
   const [lastName, setLastName] = useState<string>('')
   const [pictureUrl, setPictureUrl] = useState<string>('')
+
+  const normalizedSearchQuery: string = searchQuery.trim().toLowerCase()
+  const filteredAuthors: AuthorModel[] = authors.filter(
+    (author: AuthorModel): boolean => {
+      if (normalizedSearchQuery.length === 0) {
+        return true
+      }
+
+      const fullName: string =
+        `${author.firstName} ${author.lastName}`.toLowerCase()
+
+      return fullName.includes(normalizedSearchQuery)
+    },
+  )
 
   useEffect(() => {
     loadAuthors()
@@ -30,12 +46,29 @@ export function AuthorsPage(): React.JSX.Element {
     <Space direction="vertical" style={{ width: '100%', textAlign: 'left' }}>
       <Breadcrumb items={[{ title: 'Authors' }]} />
       <Typography.Title level={2}>Authors</Typography.Title>
+      <Input.Search
+        allowClear
+        prefix={<SearchOutlined />}
+        size="large"
+        style={{ maxWidth: 420 }}
+        placeholder="Search authors by name"
+        value={searchQuery}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>): void => {
+          setSearchQuery(event.target.value)
+        }}
+      />
       <Button type="primary" onClick={() => setIsCreateOpen(true)}>
         Create author
       </Button>
       <Table
         rowKey="id"
-        dataSource={authors}
+        dataSource={filteredAuthors}
+        locale={{
+          emptyText:
+            normalizedSearchQuery.length > 0
+              ? 'No authors match your search.'
+              : 'No authors found.',
+        }}
         columns={[
           {
             title: 'Name',
