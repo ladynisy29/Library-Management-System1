@@ -3,7 +3,7 @@ import { useBookProvider } from '../providers/useBookProvider'
 import { BookListItem } from './BookListItem'
 import { CreateBookModal } from './CreateBookModal'
 
-export function BookList() {
+export function BookList(): React.JSX.Element {
   const { books, loadBooks, deleteBook, updateBook, createBook } =
     useBookProvider()
 

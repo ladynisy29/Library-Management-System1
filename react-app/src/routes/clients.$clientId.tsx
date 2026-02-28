@@ -5,7 +5,7 @@ export const Route = createFileRoute('/clients/$clientId')({
   component: ClientDetailsRoute,
 })
 
-function ClientDetailsRoute() {
+function ClientDetailsRoute(): React.JSX.Element {
   const { clientId } = Route.useParams()
 
   return <ClientDetailsPage clientId={clientId} />

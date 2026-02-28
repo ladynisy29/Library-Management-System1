@@ -10,18 +10,25 @@ import {
 } from '@nestjs/common';
 import { AuthorService } from './author.service';
 import { CreateAuthorDto, UpdateAuthorDto } from './author.dto';
+import {
+  AuthorDetailsModel,
+  AuthorListItemModel,
+  AuthorModel,
+} from './author.model';
 
 @Controller('authors')
 export class AuthorController {
   constructor(private readonly authorService: AuthorService) {}
 
   @Get()
-  getAllAuthors() {
+  getAllAuthors(): Promise<AuthorListItemModel[]> {
     return this.authorService.getAllAuthors();
   }
 
   @Get(':id')
-  public async getAuthorById(@Param('id') id: string) {
+  public async getAuthorById(
+    @Param('id') id: string,
+  ): Promise<AuthorDetailsModel> {
     const author = await this.authorService.getAuthorById(id);
     if (!author) {
       throw new NotFoundException('Author not found');
@@ -31,7 +38,9 @@ export class AuthorController {
   }
 
   @Post()
-  public async createAuthor(@Body() createAuthorDto: CreateAuthorDto) {
+  public async createAuthor(
+    @Body() createAuthorDto: CreateAuthorDto,
+  ): Promise<AuthorModel> {
     return this.authorService.createAuthor(createAuthorDto);
   }
 
@@ -39,7 +48,7 @@ export class AuthorController {
   public async updateAuthor(
     @Param('id') id: string,
     @Body() updateAuthorDto: UpdateAuthorDto,
-  ) {
+  ): Promise<AuthorModel> {
     const author = await this.authorService.updateAuthor(id, updateAuthorDto);
     if (!author) {
       throw new NotFoundException('Author not found');

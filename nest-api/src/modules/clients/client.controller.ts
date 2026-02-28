@@ -9,6 +9,11 @@ import {
   Post,
 } from '@nestjs/common';
 import { CreateClientDto, UpdateClientDto } from './client.dto';
+import {
+  ClientDetailsModel,
+  ClientListItemModel,
+  ClientModel,
+} from './client.model';
 import { ClientService } from './client.service';
 
 @Controller('clients')
@@ -16,12 +21,14 @@ export class ClientController {
   constructor(private readonly clientService: ClientService) {}
 
   @Get()
-  public async getAllClients() {
+  public async getAllClients(): Promise<ClientListItemModel[]> {
     return this.clientService.getAllClients();
   }
 
   @Get(':id')
-  public async getClientById(@Param('id') id: string) {
+  public async getClientById(
+    @Param('id') id: string,
+  ): Promise<ClientDetailsModel> {
     const client = await this.clientService.getClientById(id);
     if (!client) {
       throw new NotFoundException('Client not found');
@@ -31,7 +38,7 @@ export class ClientController {
   }
 
   @Post()
-  public async createClient(@Body() input: CreateClientDto) {
+  public async createClient(@Body() input: CreateClientDto): Promise<ClientModel> {
     return this.clientService.createClient(input);
   }
 
@@ -39,7 +46,7 @@ export class ClientController {
   public async updateClient(
     @Param('id') id: string,
     @Body() input: UpdateClientDto,
-  ) {
+  ): Promise<ClientModel> {
     const client = await this.clientService.updateClient(id, input);
     if (!client) {
       throw new NotFoundException('Client not found');

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from '@tanstack/react-router'
 import {
   Breadcrumb,
   Button,
@@ -12,7 +13,7 @@ import {
 import type { ClientModel } from '../ClientModel'
 import { useClientProvider } from '../providers/useClientProvider'
 
-export function ClientsPage() {
+export function ClientsPage(): React.JSX.Element {
   const { clients, loadClients, createClient, deleteClient } =
     useClientProvider()
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false)
@@ -40,9 +41,9 @@ export function ClientsPage() {
           {
             title: 'Name',
             render: (_, row: ClientModel) => (
-              <a href={`/clients/${row.id}`}>
+              <Link to="/clients/$clientId" params={{ clientId: row.id }}>
                 {row.firstName} {row.lastName}
-              </a>
+              </Link>
             ),
           },
           {

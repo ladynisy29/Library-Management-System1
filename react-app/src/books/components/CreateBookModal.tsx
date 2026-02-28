@@ -5,10 +5,12 @@ import { PlusOutlined } from '@ant-design/icons'
 import { useBookAuthorsProviders } from '../providers/useBookAuthorsProviders'
 
 interface CreateBookModalProps {
-  onCreate: (book: CreateBookModel) => void
+  onCreate: (book: CreateBookModel) => Promise<void>
 }
 
-export function CreateBookModal({ onCreate }: CreateBookModalProps) {
+export function CreateBookModal({
+  onCreate,
+}: CreateBookModalProps): React.JSX.Element {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [title, setTitle] = useState<string>('')
   const [yearPublished, setYearPublished] = useState<number>(0)
@@ -64,13 +66,17 @@ export function CreateBookModal({ onCreate }: CreateBookModalProps) {
             type="text"
             placeholder="Title"
             value={title}
-            onChange={e => setTitle(e.target.value)}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setTitle(event.target.value)
+            }
           />
           <Input
             type="text"
             placeholder="Picture URL"
             value={pictureUrl}
-            onChange={e => setPictureUrl(e.target.value)}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setPictureUrl(event.target.value)
+            }
           />
           <Select
             style={{ width: '100%' }}
@@ -78,13 +84,15 @@ export function CreateBookModal({ onCreate }: CreateBookModalProps) {
               label: `${author.firstName} ${author.lastName}`,
               value: author.id,
             }))}
-            onChange={value => setAuthorId(value)}
+            onChange={(value: string) => setAuthorId(value)}
           />
           <Input
             type="number"
             placeholder="Year Published"
             value={yearPublished}
-            onChange={e => setYearPublished(Number(e.target.value))}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setYearPublished(Number(event.target.value))
+            }
           />
         </Space>
       </Modal>

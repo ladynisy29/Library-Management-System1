@@ -5,7 +5,7 @@ export const Route = createFileRoute('/books/$bookId')({
   component: BookDetailsPage,
 })
 
-function BookDetailsPage() {
+function BookDetailsPage(): React.JSX.Element {
   const { bookId } = Route.useParams()
 
   return <BookDetails id={bookId} />

@@ -18,12 +18,13 @@ import { Link } from '@tanstack/react-router'
 import { Route as booksRoute } from '../../routes/books'
 import type { ClientModel } from '../../clients/ClientModel'
 import { apiClient } from '../../api'
+import type { BookDetailsModel } from '../BookModel'
 
 interface BookDetailsProps {
   id: string
 }
 
-export const BookDetails = ({ id }: BookDetailsProps) => {
+export const BookDetails = ({ id }: BookDetailsProps): React.JSX.Element => {
   const { isLoading, book, loadBook, updateBook, recordSale } =
     useBookDetailsProvider(id)
   const [title, setTitle] = useState<string>('')
@@ -78,6 +79,19 @@ export const BookDetails = ({ id }: BookDetailsProps) => {
       </Link>
       <Typography.Title level={1}>{book?.title}</Typography.Title>
 
+      {book?.pictureUrl ? (
+        <img
+          src={book.pictureUrl}
+          alt={book.title}
+          style={{
+            width: 160,
+            height: 160,
+            objectFit: 'cover',
+            borderRadius: 8,
+          }}
+        />
+      ) : null}
+
       <Form
         layout="vertical"
         onFinish={() =>
@@ -119,7 +133,8 @@ export const BookDetails = ({ id }: BookDetailsProps) => {
         columns={[
           {
             title: 'Client',
-            render: (_, row) => `${row.firstName} ${row.lastName}`,
+            render: (_, row: BookDetailsModel['clients'][number]) =>
+              `${row.firstName} ${row.lastName}`,
           },
           {
             title: 'Sale date',

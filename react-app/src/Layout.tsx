@@ -16,7 +16,7 @@ interface LayoutProps {
   children: React.ReactNode
 }
 
-export function Layout({ children }: LayoutProps) {
+export function Layout({ children }: LayoutProps): React.JSX.Element {
   const items: Required<MenuProps>['items'] = [
     {
       label: <Link to={indexRoute.to}>Home</Link>,

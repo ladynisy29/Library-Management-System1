@@ -15,17 +15,21 @@ interface BookListItemProps {
   onUpdate: (id: string, input: UpdateBookModel) => void
 }
 
-export function BookListItem({ book, onDelete, onUpdate }: BookListItemProps) {
+export function BookListItem({
+  book,
+  onDelete,
+  onUpdate,
+}: BookListItemProps): React.JSX.Element {
   const [title, setTitle] = useState<string>(book.title)
   const [isEditing, setIsEditing] = useState<boolean>(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
 
-  const onCancelEdit = () => {
+  const onCancelEdit = (): void => {
     setIsEditing(false)
     setTitle(book.title)
   }
 
-  const onValidateEdit = () => {
+  const onValidateEdit = (): void => {
     onUpdate(book.id, { title })
     setIsEditing(false)
   }
@@ -45,7 +49,12 @@ export function BookListItem({ book, onDelete, onUpdate }: BookListItemProps) {
     >
       <Col span={12} style={{ margin: 'auto 0' }}>
         {isEditing ? (
-          <input value={title} onChange={e => setTitle(e.target.value)} />
+          <input
+            value={title}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setTitle(event.target.value)
+            }
+          />
         ) : (
           <Link
             to={`/books/$bookId`}

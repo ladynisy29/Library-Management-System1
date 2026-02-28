@@ -5,7 +5,7 @@ export const Route = createFileRoute('/authors/$authorId')({
   component: AuthorDetailsRoute,
 })
 
-function AuthorDetailsRoute() {
+function AuthorDetailsRoute(): React.JSX.Element {
   const { authorId } = Route.useParams()
 
   return <AuthorDetailsPage authorId={authorId} />

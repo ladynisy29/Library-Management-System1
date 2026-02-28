@@ -3,7 +3,7 @@ interface HelloProps {
   name: string
 }
 
-export function Hello({ children, name }: HelloProps) {
+export function Hello({ children, name }: HelloProps): React.JSX.Element {
   return (
     <>
       <h1>Hello {name}!</h1>

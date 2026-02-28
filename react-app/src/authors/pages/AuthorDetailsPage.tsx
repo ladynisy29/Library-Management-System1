@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Breadcrumb, Button, Form, Input, Space, Table, Typography } from 'antd'
+import type { AuthorDetailsModel } from '../AuthorModel'
 import { useAuthorProvider } from '../providers/useAuthorProvider'
 
 interface AuthorDetailsPageProps {
   authorId: string
 }
 
-export function AuthorDetailsPage({ authorId }: AuthorDetailsPageProps) {
+export function AuthorDetailsPage({
+  authorId,
+}: AuthorDetailsPageProps): React.JSX.Element {
   const { author, loadAuthor, updateAuthor } = useAuthorProvider()
   const [firstName, setFirstName] = useState<string>('')
   const [lastName, setLastName] = useState<string>('')
@@ -32,7 +35,7 @@ export function AuthorDetailsPage({ authorId }: AuthorDetailsPageProps) {
       <Breadcrumb
         items={[
           {
-            title: <a href="/authors">Authors</a>,
+            title: <Link to="/authors">Authors</Link>,
           },
           {
             title: author
@@ -45,6 +48,19 @@ export function AuthorDetailsPage({ authorId }: AuthorDetailsPageProps) {
       <Typography.Title level={2}>
         {author ? `${author.firstName} ${author.lastName}` : 'Author'}
       </Typography.Title>
+
+      {author?.pictureUrl ? (
+        <img
+          src={author.pictureUrl}
+          alt={`${author.firstName} ${author.lastName}`}
+          style={{
+            width: 120,
+            height: 120,
+            objectFit: 'cover',
+            borderRadius: 8,
+          }}
+        />
+      ) : null}
 
       <Form
         layout="vertical"
@@ -87,7 +103,7 @@ export function AuthorDetailsPage({ authorId }: AuthorDetailsPageProps) {
         columns={[
           {
             title: 'Book',
-            render: (_, row) => (
+            render: (_, row: AuthorDetailsModel['books'][number]) => (
               <Link to="/books/$bookId" params={{ bookId: row.id }}>
                 {row.title}
               </Link>

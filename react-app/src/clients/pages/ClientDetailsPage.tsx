@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Breadcrumb, Button, Form, Input, Space, Table, Typography } from 'antd'
+import type { ClientDetailsModel } from '../ClientModel'
 import { useClientProvider } from '../providers/useClientProvider'
 
 interface ClientDetailsPageProps {
   clientId: string
 }
 
-export function ClientDetailsPage({ clientId }: ClientDetailsPageProps) {
+export function ClientDetailsPage({
+  clientId,
+}: ClientDetailsPageProps): React.JSX.Element {
   const { client, loadClient, updateClient } = useClientProvider()
   const [firstName, setFirstName] = useState<string>('')
   const [lastName, setLastName] = useState<string>('')
@@ -34,7 +37,7 @@ export function ClientDetailsPage({ clientId }: ClientDetailsPageProps) {
       <Breadcrumb
         items={[
           {
-            title: <a href="/clients">Clients</a>,
+            title: <Link to="/clients">Clients</Link>,
           },
           {
             title: client
@@ -47,6 +50,19 @@ export function ClientDetailsPage({ clientId }: ClientDetailsPageProps) {
       <Typography.Title level={2}>
         {client ? `${client.firstName} ${client.lastName}` : 'Client'}
       </Typography.Title>
+
+      {client?.pictureUrl ? (
+        <img
+          src={client.pictureUrl}
+          alt={`${client.firstName} ${client.lastName}`}
+          style={{
+            width: 120,
+            height: 120,
+            objectFit: 'cover',
+            borderRadius: 8,
+          }}
+        />
+      ) : null}
 
       <Form
         layout="vertical"
@@ -88,7 +104,7 @@ export function ClientDetailsPage({ clientId }: ClientDetailsPageProps) {
         columns={[
           {
             title: 'Book',
-            render: (_, row) => (
+            render: (_, row: ClientDetailsModel['sales'][number]) => (
               <Link to="/books/$bookId" params={{ bookId: row.bookId }}>
                 {row.bookTitle}
               </Link>

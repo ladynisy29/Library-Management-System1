@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from '@tanstack/react-router'
 import {
   Breadcrumb,
   Button,
@@ -12,7 +13,7 @@ import {
 import type { AuthorModel } from '../AuthorModel'
 import { useAuthorProvider } from '../providers/useAuthorProvider'
 
-export function AuthorsPage() {
+export function AuthorsPage(): React.JSX.Element {
   const { authors, loadAuthors, createAuthor, deleteAuthor } =
     useAuthorProvider()
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false)
@@ -39,9 +40,9 @@ export function AuthorsPage() {
           {
             title: 'Name',
             render: (_, row: AuthorModel) => (
-              <a href={`/authors/${row.id}`}>
+              <Link to="/authors/$authorId" params={{ authorId: row.id }}>
                 {row.firstName} {row.lastName}
-              </a>
+              </Link>
             ),
           },
           {
